@@ -34,24 +34,24 @@ return {
       constrain_cursor = "editable",
       watch_for_changes = false,
       keymaps = {
-        ["<CR>"] = "actions.select", -- Enter: abrir archivo/directorio
-        ["<C-s>"] = { "actions.select", opts = { vertical = true } }, -- Ctrl+s: split vertical
-        ["<C-h>"] = { "actions.select", opts = { horizontal = true } }, -- Ctrl+h: split horizontal
-        ["<C-t>"] = { "actions.select", opts = { tab = true } }, -- Ctrl+t: nueva pestaña
+        ["<CR>"] = "actions.select", -- Enter: open file/directory
+        ["<C-s>"] = { "actions.select", opts = { vertical = true } }, -- Ctrl+s: vertical split
+        ["<C-h>"] = { "actions.select", opts = { horizontal = true } }, -- Ctrl+h: horizontal split
+        ["<C-t>"] = { "actions.select", opts = { tab = true } }, -- Ctrl+t: new tab
         ["<C-p>"] = "actions.preview", -- Ctrl+p: preview
-        ["<C-c>"] = "actions.close", -- Ctrl+c: cerrar
-        ["<C-l>"] = "actions.refresh", -- Ctrl+l: refrescar
-        ["-"] = "actions.parent", -- -: directorio padre
-        ["_"] = "actions.open_cwd", -- _: directorio de trabajo
-        ["`"] = "actions.cd", -- `: cambiar directorio
-        ["~"] = { "actions.cd", opts = { scope = "tab" } }, -- ~: cambiar directorio en pestaña
-        ["gs"] = "actions.change_sort", -- gs: cambiar orden
-        ["gx"] = "actions.open_external", -- gx: abrir con aplicación externa
-        ["g."] = "actions.toggle_hidden", -- g.: mostrar/ocultar archivos ocultos
-        ["g\\"] = "actions.toggle_trash", -- g\: mostrar/ocultar papelera
-        -- Teclas adicionales para navegación rápida
-        ["l"] = "actions.select", -- l: entrar a archivo/directorio (como vim)
-        ["h"] = "actions.parent", -- h: directorio padre (como vim)
+        ["<C-c>"] = "actions.close", -- Ctrl+c: close
+        ["<C-l>"] = "actions.refresh", -- Ctrl+l: refresh
+        ["-"] = "actions.parent", -- -: parent directory
+        ["_"] = "actions.open_cwd", -- _: working directory
+        ["`"] = "actions.cd", -- `: change directory
+        ["~"] = { "actions.cd", opts = { scope = "tab" } }, -- ~: change directory (tab scope)
+        ["gs"] = "actions.change_sort", -- gs: change sort
+        ["gx"] = "actions.open_external", -- gx: open with external app
+        ["g."] = "actions.toggle_hidden", -- g.: toggle hidden files
+        ["g\\"] = "actions.toggle_trash", -- g\: toggle trash
+        -- Additional keys for quick navigation
+        ["l"] = "actions.select", -- l: enter file/directory (vim-like)
+        ["h"] = "actions.parent", -- h: parent directory (vim-like)
       },
       use_default_keymaps = false,
       view_options = {
