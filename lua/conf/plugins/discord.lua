@@ -4,7 +4,7 @@ return {
   event = "VeryLazy",
   opts = {
     editor = {
-      client = "neovim",
+      client = "1457478127566459078",
       tooltip = "touching bare metal",
       icon = nil,
     },
