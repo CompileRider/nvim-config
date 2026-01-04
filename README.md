@@ -12,6 +12,9 @@ Professional Neovim configuration optimized for **C/C++ development** with beaut
 ### File Explorer
 ![Explorer](screenshots/explorer.png)
 
+### Code Editing
+![Code](screenshots/3.png)
+
 ## ✨ Features
 
 - **LSP**: Native Neovim 0.11+ LSP with clangd (optimized flags)
@@ -68,6 +71,13 @@ nvim
 - clangd (for C/C++ LSP)
 - ripgrep (for Telescope/Spectre)
 - A Nerd Font (for icons)
+
+## 🖥️ Cross-Platform Support
+
+Works on **Linux**, **macOS**, and **Windows**:
+- Auto-detects OS and configures shell (bash/zsh/pwsh/cmd)
+- Cross-platform path handling
+- LSP works if clangd is installed
 
 ## 📄 License
 
