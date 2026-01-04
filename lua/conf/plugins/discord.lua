@@ -12,7 +12,7 @@ return {
       theme = "catppuccin",
       flavor = "dark",
       swap_fields = false,
-      swap_icons = true,  -- Language icon as small, editor as large
+      swap_icons = true,
     },
     timestamp = {
       enabled = true,
@@ -26,14 +26,22 @@ return {
       ignore_focus = true,
       unidle_on_focus = true,
       smart_idle = true,
-      details = "Idling",
+      details = function(opts)
+        return opts.workspace and ("Idle in " .. opts.workspace) or "Idling"
+      end,
       state = nil,
       tooltip = "💤",
     },
     text = {
       workspace = function(opts) return "In " .. opts.workspace end,
-      viewing = function(opts) return "Viewing " .. opts.filename end,
-      editing = function(opts) return "Editing " .. opts.filename end,
+      viewing = function(opts)
+        local mod = vim.bo.modified and " [+]" or ""
+        return "Viewing " .. opts.filename .. mod .. " " .. opts.cursor_line .. ":" .. opts.cursor_char
+      end,
+      editing = function(opts)
+        local mod = vim.bo.modified and " [+]" or ""
+        return "Editing " .. opts.filename .. mod .. " " .. opts.cursor_line .. ":" .. opts.cursor_char
+      end,
       file_browser = function(opts) return "Browsing files in " .. opts.name end,
       plugin_manager = function(opts) return "Managing plugins in " .. opts.name end,
       lsp = function(opts) return "Configuring LSP in " .. opts.name end,
@@ -68,10 +76,8 @@ return {
     },
     hooks = {
       post_activity = function(_, activity)
-        -- Override large image with custom image
         activity.assets.large_image = "https://raw.githubusercontent.com/CompileRider/nvim-config/main/discord_avatar.png"
-        activity.assets.large_text = "Neovim"
-        -- Show Neovim version in small icon tooltip
+        activity.assets.large_text = "Bare Metal"
         local version = vim.version()
         activity.assets.small_text = string.format(
           "Neovim %s.%s.%s",
