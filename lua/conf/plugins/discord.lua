@@ -6,7 +6,7 @@ return {
     editor = {
       client = "neovim",
       tooltip = "The Superior Text Editor",
-      icon = "https://raw.githubusercontent.com/CompileRider/nvim-config/main/discord_avatar.jpg",
+      icon = nil,  -- Uses default Neovim icon
     },
     display = {
       theme = "catppuccin",
