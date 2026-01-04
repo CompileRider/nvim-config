@@ -10,9 +10,9 @@ return {
     },
     display = {
       theme = "catppuccin",
-      flavor = "dark",  -- "dark", "light", o "accent"
+      flavor = "dark",
       swap_fields = false,
-      swap_icons = false,
+      swap_icons = true,  -- Language icon as small, editor as large
     },
     timestamp = {
       enabled = true,
