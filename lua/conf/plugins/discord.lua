@@ -57,6 +57,15 @@ return {
         override = true,
       },
     },
+    advanced = {
+      discord = {
+        reconnect = {
+          enabled = true,
+          interval = 5000,
+          initial = true,
+        },
+      },
+    },
     hooks = {
       post_activity = function(_, activity)
         -- Override large image with custom image
