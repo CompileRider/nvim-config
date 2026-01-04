@@ -1,15 +1,34 @@
--- Smooth animations for cursor, scroll, and window transitions
+-------------------------------------------------------------------------------
+-- Smooth animations for cursor, scroll, and windows
+-- Provides fluid visual feedback during navigation
+-------------------------------------------------------------------------------
 return {
   "echasnovski/mini.animate",
   event = "VeryLazy",
   config = function()
     local animate = require("mini.animate")
+    local ease = animate.gen_timing.exponential({ easing = "out", duration = 100, unit = "total" })
+
     animate.setup({
-      cursor = { enable = true, timing = animate.gen_timing.linear({ duration = 100, unit = "total" }), path = animate.gen_path.line() },
-      scroll = { enable = true, timing = animate.gen_timing.linear({ duration = 150, unit = "total" }), subscroll = animate.gen_subscroll.equal({ predicate = function(total_scroll) return total_scroll > 1 end }) },
-      resize = { enable = true, timing = animate.gen_timing.linear({ duration = 100, unit = "total" }) },
-      open = { enable = true, timing = animate.gen_timing.linear({ duration = 200, unit = "total" }), winconfig = animate.gen_winconfig.wipe({ direction = "from_edge" }), winblend = animate.gen_winblend.linear({ from = 80, to = 0 }) },
-      close = { enable = true, timing = animate.gen_timing.linear({ duration = 150, unit = "total" }), winconfig = animate.gen_winconfig.wipe({ direction = "to_edge" }), winblend = animate.gen_winblend.linear({ from = 0, to = 80 }) },
+      cursor = { enable = true, timing = ease },
+      scroll = {
+        enable = true,
+        timing = animate.gen_timing.exponential({ easing = "out", duration = 150, unit = "total" }),
+        subscroll = animate.gen_subscroll.equal({ max_output_steps = 60 }),
+      },
+      resize = { enable = true, timing = ease },
+      open = {
+        enable = true,
+        timing = animate.gen_timing.linear({ duration = 150, unit = "total" }),
+        winconfig = animate.gen_winconfig.wipe({ direction = "from_edge" }),
+        winblend = animate.gen_winblend.linear({ from = 80, to = 0 }),
+      },
+      close = {
+        enable = true,
+        timing = animate.gen_timing.linear({ duration = 100, unit = "total" }),
+        winconfig = animate.gen_winconfig.wipe({ direction = "to_edge" }),
+        winblend = animate.gen_winblend.linear({ from = 0, to = 80 }),
+      },
     })
   end,
 }
