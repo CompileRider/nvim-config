@@ -5,8 +5,8 @@ return {
   opts = {
     editor = {
       client = "neovim",
-      tooltip = "The Superior Text Editor",
-      icon = nil,  -- Uses default Neovim icon
+      tooltip = "touching bare metal",
+      icon = nil,
     },
     display = {
       theme = "catppuccin",
