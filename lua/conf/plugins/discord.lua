@@ -1,40 +1,72 @@
 return {
   "vyfor/cord.nvim",
-  build = "./build",
+  build = ":Cord update",
   event = "VeryLazy",
   opts = {
     editor = {
       client = "neovim",
       tooltip = "The Superior Text Editor",
+      icon = "https://raw.githubusercontent.com/CompileRider/nvim-config/main/discord_avatar.jpg",
     },
     display = {
-      show_time = true,
-      show_repository = true,
-      show_cursor_position = false,
+      theme = "catppuccin",
+      flavor = "dark",  -- "dark", "light", o "accent"
       swap_fields = false,
       swap_icons = false,
     },
-    lsp = {
-      show_problem_count = true,
+    timestamp = {
+      enabled = true,
+      reset_on_idle = false,
+      reset_on_change = false,
     },
     idle = {
-      enable = true,
-      timeout = 300000, -- 5 minutes
+      enabled = true,
+      timeout = 300000,
       show_status = true,
       ignore_focus = true,
-      details = "Idle",
-      state = "Taking a break",
+      unidle_on_focus = true,
+      smart_idle = true,
+      details = "Idling",
+      state = nil,
+      tooltip = "💤",
     },
     text = {
-      viewing = "Viewing {}",
-      editing = "Editing {}",
-      file_browser = "Browsing files",
-      plugin_manager = "Managing plugins",
-      workspace = "In {}",
+      workspace = function(opts) return "In " .. opts.workspace end,
+      viewing = function(opts) return "Viewing " .. opts.filename end,
+      editing = function(opts) return "Editing " .. opts.filename end,
+      file_browser = function(opts) return "Browsing files in " .. opts.name end,
+      plugin_manager = function(opts) return "Managing plugins in " .. opts.name end,
+      lsp = function(opts) return "Configuring LSP in " .. opts.name end,
+      docs = function(opts) return "Reading " .. opts.name end,
+      vcs = function(opts) return "Committing changes in " .. opts.name end,
+      terminal = function(opts) return "Running commands in " .. opts.name end,
+      dashboard = "Home",
     },
-    assets = {
-      -- Custom icons for languages (optional)
-      -- c = { icon = "c", tooltip = "C", name = "C" },
+    buttons = {
+      {
+        label = function(opts)
+          return opts.repo_url and "View Repository" or nil
+        end,
+        url = function(opts) return opts.repo_url end,
+      },
+    },
+    plugins = {
+      ["cord.plugins.diagnostics"] = {
+        scope = "buffer",
+        severity = { min = vim.diagnostic.severity.WARN },
+        override = true,
+      },
+    },
+    hooks = {
+      post_activity = function(_, activity)
+        local version = vim.version()
+        activity.assets.small_text = string.format(
+          "Neovim %s.%s.%s",
+          version.major,
+          version.minor,
+          version.patch
+        )
+      end,
     },
   },
 }
