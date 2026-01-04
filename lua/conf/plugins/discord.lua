@@ -59,6 +59,10 @@ return {
     },
     hooks = {
       post_activity = function(_, activity)
+        -- Override large image with custom image
+        activity.assets.large_image = "https://raw.githubusercontent.com/CompileRider/nvim-config/main/discord_large.png"
+        activity.assets.large_text = "Neovim"
+        -- Show Neovim version in small icon tooltip
         local version = vim.version()
         activity.assets.small_text = string.format(
           "Neovim %s.%s.%s",
