@@ -14,7 +14,33 @@ return {
     formatters = {
       clang_format = {
         prepend_args = {
-          "--style={BasedOnStyle: LLVM, IndentWidth: 8, TabWidth: 8, UseTab: Always, BreakBeforeBraces: Linux, AllowShortFunctionsOnASingleLine: None, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 80, PointerAlignment: Right, SpaceAfterCStyleCast: true, AlignAfterOpenBracket: DontAlign, AlignOperands: DontAlign, AlignTrailingComments: false, AllowAllParametersOfDeclarationOnNextLine: false, BinPackParameters: true, BinPackArguments: true}",
+          "--style={"
+            .. "BasedOnStyle: LLVM, "
+            .. "IndentWidth: 8, "
+            .. "TabWidth: 8, "
+            .. "UseTab: Always, "
+            .. "ColumnLimit: 80, "
+            .. "BreakBeforeBraces: Linux, "
+            .. "AllowShortFunctionsOnASingleLine: None, "
+            .. "AllowShortIfStatementsOnASingleLine: false, "
+            .. "AllowShortLoopsOnASingleLine: false, "
+            .. "AllowShortBlocksOnASingleLine: false, "
+            .. "IndentCaseLabels: false, "
+            .. "IndentGotoLabels: false, "
+            .. "PointerAlignment: Right, "
+            .. "SpaceAfterCStyleCast: false, "
+            .. "SpaceBeforeParens: ControlStatementsExceptForEachMacros, "
+            .. "AlignAfterOpenBracket: Align, "
+            .. "AlignTrailingComments: false, "
+            .. "AlignConsecutiveAssignments: false, "
+            .. "AlignConsecutiveDeclarations: false, "
+            .. "AlignOperands: true, "
+            .. "BinPackArguments: true, "
+            .. "BinPackParameters: true, "
+            .. "ContinuationIndentWidth: 8, "
+            .. "ReflowComments: false, "
+            .. "SortIncludes: false"
+            .. "}",
         },
       },
     },
