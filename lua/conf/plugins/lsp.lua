@@ -101,8 +101,9 @@ return {
   -- bacon-ls: Fast background diagnostics
   {
     "neovim/nvim-lspconfig",
-    ft = { "rust" },
+    ft = { "rust", "toml" },
     config = function()
+      -- bacon-ls for Rust
       vim.lsp.config["bacon_ls"] = {
         cmd = { vim.fn.expand("~/.cargo/bin/bacon-ls") },
         filetypes = { "rust" },
@@ -110,6 +111,26 @@ return {
         init_options = { updateOnSave = true, updateOnSaveWaitMillis = 500 },
       }
       vim.lsp.enable("bacon_ls")
+
+      -- taplo for TOML (Cargo.toml completion)
+      vim.lsp.config["taplo"] = {
+        cmd = { vim.fn.expand("~/.cargo/bin/taplo"), "lsp", "stdio" },
+        filetypes = { "toml" },
+        root_markers = { ".git", "Cargo.toml" },
+        settings = {
+          taplo = {
+            configFile = { enabled = true },
+            schema = {
+              enabled = true,
+              catalogs = { "https://www.schemastore.org/api/json/catalog.json" },
+              associations = {
+                ["Cargo\\.toml$"] = "https://json.schemastore.org/cargo.json",
+              },
+            },
+          },
+        },
+      }
+      vim.lsp.enable("taplo")
     end,
   },
 }
