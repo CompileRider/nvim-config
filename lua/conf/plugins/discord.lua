@@ -54,7 +54,7 @@ return {
     },
     hooks = {
       post_activity = function(_, activity)
-        activity.assets.large_image = "https://raw.githubusercontent.com/CompileRider/nvim-config/main/discord_avatar.png"
+        activity.assets.large_image = "https://i.imgur.com/aDdzldp.png"
         activity.assets.large_text = "Bare Metal"
         local v = vim.version()
         activity.assets.small_text = ("Neovim %d.%d.%d"):format(v.major, v.minor, v.patch)
