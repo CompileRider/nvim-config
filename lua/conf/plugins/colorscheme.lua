@@ -34,7 +34,6 @@ local function apply_rust_highlights()
 end
 
 local themes = {
-  -- Popular
   tokyonight = { "folke/tokyonight.nvim", cmd = "tokyonight" },
   catppuccin = { "catppuccin/nvim", name = "catppuccin", cmd = "catppuccin-mocha" },
   rose_pine = { "rose-pine/neovim", name = "rose-pine", cmd = "rose-pine" },
@@ -50,32 +49,25 @@ local themes = {
   material = { "marko-cerovac/material.nvim", cmd = "material" },
   github_dark = { "projekt0n/github-nvim-theme", cmd = "github_dark" },
   oxocarbon = { "nyoom-engineering/oxocarbon.nvim", cmd = "oxocarbon" },
-  -- Nightfox variants
   dawnfox = { "EdenEast/nightfox.nvim", cmd = "dawnfox" },
   dayfox = { "EdenEast/nightfox.nvim", cmd = "dayfox" },
   duskfox = { "EdenEast/nightfox.nvim", cmd = "duskfox" },
   nordfox = { "EdenEast/nightfox.nvim", cmd = "nordfox" },
   terafox = { "EdenEast/nightfox.nvim", cmd = "terafox" },
   carbonfox = { "EdenEast/nightfox.nvim", cmd = "carbonfox" },
-  -- Catppuccin variants
   catppuccin_latte = { "catppuccin/nvim", name = "catppuccin", cmd = "catppuccin-latte" },
   catppuccin_frappe = { "catppuccin/nvim", name = "catppuccin", cmd = "catppuccin-frappe" },
   catppuccin_macchiato = { "catppuccin/nvim", name = "catppuccin", cmd = "catppuccin-macchiato" },
-  -- Tokyonight variants
   tokyonight_storm = { "folke/tokyonight.nvim", cmd = "tokyonight-storm" },
   tokyonight_day = { "folke/tokyonight.nvim", cmd = "tokyonight-day" },
   tokyonight_moon = { "folke/tokyonight.nvim", cmd = "tokyonight-moon" },
-  -- Rose-pine variants
   rose_pine_moon = { "rose-pine/neovim", name = "rose-pine", cmd = "rose-pine-moon" },
   rose_pine_dawn = { "rose-pine/neovim", name = "rose-pine", cmd = "rose-pine-dawn" },
-  -- GitHub variants
   github_dark_dimmed = { "projekt0n/github-nvim-theme", cmd = "github_dark_dimmed" },
   github_light = { "projekt0n/github-nvim-theme", cmd = "github_light" },
-  -- Kanagawa variants
   kanagawa_wave = { "rebelot/kanagawa.nvim", cmd = "kanagawa-wave" },
   kanagawa_dragon = { "rebelot/kanagawa.nvim", cmd = "kanagawa-dragon" },
   kanagawa_lotus = { "rebelot/kanagawa.nvim", cmd = "kanagawa-lotus" },
-  -- Additional themes
   gruvbox_material = { "sainnhe/gruvbox-material", cmd = "gruvbox-material" },
   sonokai = { "sainnhe/sonokai", cmd = "sonokai" },
   edge = { "sainnhe/edge", cmd = "edge" },
@@ -124,56 +116,83 @@ local themes = {
   oh_lucy = { "Yazeed1s/oh-lucy.nvim", cmd = "oh-lucy" },
 }
 
+-- Get unique repos from themes
+local function get_repo(name)
+  return themes[name] and themes[name][1]
+end
+
 local function apply_theme(name, silent)
-  if themes[name] then
-    local plugin = themes[name].name or name
-    if silent then
-      local notify = vim.notify
-      vim.notify = function() end
-      pcall(function() require("lazy").load({ plugins = { plugin } }) end)
-      pcall(vim.cmd.colorscheme, themes[name].cmd)
-      vim.notify = notify
-    else
-      pcall(function() require("lazy").load({ plugins = { plugin } }) end)
-      pcall(vim.cmd.colorscheme, themes[name].cmd)
-    end
-    apply_rust_highlights()
+  if not themes[name] then return end
+  local repo = get_repo(name)
+  local plugin_name = themes[name].name or repo:match("[^/]+$")
+  
+  if silent then
+    local notify = vim.notify
+    vim.notify = function() end
+    pcall(function() require("lazy").load({ plugins = { plugin_name } }) end)
+    pcall(vim.cmd.colorscheme, themes[name].cmd)
+    vim.notify = notify
+  else
+    pcall(function() require("lazy").load({ plugins = { plugin_name } }) end)
+    pcall(vim.cmd.colorscheme, themes[name].cmd)
   end
+  apply_rust_highlights()
 end
 
 local selected = get_saved()
+local selected_theme = themes[selected] or themes.tokyonight
+local selected_repo = selected_theme[1]
 
--- Build specs
+-- Only install the selected theme's repo + repos needed for picker preview
+local installed_repos = {}
 local specs = {}
-for name, theme in pairs(themes) do
-  local is_selected = name == selected
-  table.insert(specs, {
-    theme[1],
-    name = theme.name or name,
-    lazy = not is_selected,
-    priority = is_selected and 1000 or nil,
-    config = is_selected and function() apply_theme(name) end or nil,
-  })
-end
 
--- Picker with live preview
+-- Add selected theme
+installed_repos[selected_repo] = true
+table.insert(specs, {
+  selected_repo,
+  name = selected_theme.name,
+  lazy = false,
+  priority = 1000,
+  config = function()
+    vim.cmd.colorscheme(selected_theme.cmd)
+    apply_rust_highlights()
+  end,
+})
+
+-- Picker command - installs themes on-demand
 vim.api.nvim_create_user_command("Colorscheme", function()
   local names = vim.tbl_keys(themes)
   table.sort(names)
   local original = get_saved()
 
   require("telescope.pickers").new({}, {
-    prompt_title = "Colorscheme",
+    prompt_title = "Colorscheme (Enter to save, Esc to cancel)",
     finder = require("telescope.finders").new_table({ results = names }),
     sorter = require("telescope.config").values.generic_sorter({}),
     attach_mappings = function(buf, map)
       local actions = require("telescope.actions")
       local state = require("telescope.actions.state")
 
-      -- Live preview on selection change
       local function preview()
         local entry = state.get_selected_entry()
-        if entry then apply_theme(entry[1], true) end
+        if not entry then return end
+        local name = entry[1]
+        local repo = get_repo(name)
+        
+        -- Install if not installed
+        if not installed_repos[repo] then
+          local notify = vim.notify
+          vim.notify = function() end
+          pcall(function()
+            require("lazy").install({ plugins = { repo }, wait = true })
+            require("lazy").load({ plugins = { repo:match("[^/]+$") } })
+          end)
+          vim.notify = notify
+          installed_repos[repo] = true
+        end
+        
+        apply_theme(name, true)
       end
 
       map("i", "<Down>", function(b) actions.move_selection_next(b) preview() end)
@@ -192,7 +211,7 @@ vim.api.nvim_create_user_command("Colorscheme", function()
       end)
 
       actions.close:enhance({ post = function()
-        if not state.get_selected_entry() then apply_theme(original, true) end
+        apply_theme(original, true)
       end })
 
       return true
