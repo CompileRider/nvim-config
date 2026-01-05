@@ -1,31 +1,20 @@
--- Treesitter: Syntax highlighting and code understanding
--- Provides enhanced syntax highlighting, indentation, and incremental selection
+-- Treesitter: Syntax highlighting and indentation
 return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   event = { "BufReadPost", "BufNewFile" },
   config = function()
-    local ok, configs = pcall(require, "nvim-treesitter.configs")
-    if not ok then return end
-    
-    configs.setup({
-      ensure_installed = {
-        "c", "cpp", "cmake", "make", "lua", "vim", "vimdoc", "query",
-        "bash", "json", "yaml", "toml", "markdown", "markdown_inline",
-      },
-      sync_install = false,
+    require("nvim-treesitter").setup({
+      ensure_installed = { "rust", "toml", "lua", "vim", "vimdoc", "query", "bash", "json", "yaml", "markdown", "markdown_inline" },
       auto_install = true,
-      highlight = { enable = true, additional_vim_regex_highlighting = false },
-      indent = { enable = true },
-      incremental_selection = {
-        enable = true,
-        keymaps = {
-          init_selection = "gnn",
-          node_incremental = "grn",
-          scope_incremental = "grc",
-          node_decremental = "grm",
-        },
-      },
+    })
+
+    vim.api.nvim_create_autocmd("FileType", {
+      callback = function()
+        if pcall(vim.treesitter.start) then
+          vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+        end
+      end,
     })
   end,
 }

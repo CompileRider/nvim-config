@@ -59,60 +59,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
--- Clangd extensions (loaded on FileType c,cpp)
+-- Rust keymaps (loaded on FileType rust)
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp", "objc", "objcpp", "cuda", "proto" },
+  pattern = { "rust" },
   callback = function()
-    keymap("n", "<A-o>", "<cmd>ClangdSwitchSourceHeader<cr>", opts)
-    keymap("n", "<A-i>", "<cmd>ClangdSymbolInfo<cr>", opts)
-    keymap("n", "<A-t>", "<cmd>ClangdTypeHierarchy<cr>", opts)
-    keymap("n", "<A-m>", "<cmd>ClangdMemoryUsage<cr>", opts)
-    keymap("n", "<A-a>", "<cmd>ClangdAST<cr>", opts)
-  end,
-})
-
--- CMake (loaded on FileType cmake)
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp", "cmake" },
-  callback = function()
-    keymap("n", "<F5>", "<cmd>CMakeGenerate<cr>", opts)
-    keymap("n", "<F6>", "<cmd>CMakeBuild<cr>", opts)
-    keymap("n", "<F7>", "<cmd>CMakeRun<cr>", opts)
-    keymap("n", "<F8>", "<cmd>CMakeDebug<cr>", opts)
-    keymap("n", "<F9>", "<cmd>CMakeClean<cr>", opts)
-    keymap("n", "<C-m>g", "<cmd>CMakeGenerate<cr>", opts)
-    keymap("n", "<C-m>b", "<cmd>CMakeBuild<cr>", opts)
-    keymap("n", "<C-m>r", "<cmd>CMakeRun<cr>", opts)
-    keymap("n", "<C-m>c", "<cmd>CMakeClean<cr>", opts)
-    keymap("n", "<C-m>s", "<cmd>CMakeSwitch<cr>", opts)
-    keymap("n", "<C-m>o", "<cmd>CMakeOpen<cr>", opts)
-    keymap("n", "<C-m>t", "<cmd>CMakeSelectTarget<cr>", opts)
-  end,
-})
-
--- Refactoring (loaded on FileType c,cpp)
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp" },
-  callback = function()
-    keymap("v", "<F10>", function() require('refactoring').refactor('Extract Function') end, opts)
-    keymap("v", "<F11>", function() require('refactoring').refactor('Extract Variable') end, opts)
-    keymap("v", "<F12>", function() require('refactoring').refactor('Inline Variable') end, opts)
-    keymap("n", "<C-r>f", function() require('refactoring').refactor('Extract Block') end, opts)
-    keymap("n", "<C-r>i", function() require('refactoring').refactor('Inline Function') end, opts)
-    keymap("n", "<C-r>p", function() require('refactoring').debug.printf({below = false}) end, opts)
-    keymap("n", "<C-r>v", function() require('refactoring').debug.print_var({normal = true}) end, opts)
-    keymap("v", "<C-r>v", function() require('refactoring').debug.print_var({}) end, opts)
-    keymap("n", "<C-r>c", function() require('refactoring').debug.cleanup({}) end, opts)
-    
-    -- DAP keymaps
+    -- Cargo commands
+    keymap("n", "<F5>", "<cmd>CargoRun<cr>", opts)
+    keymap("n", "<F6>", "<cmd>CargoBuild<cr>", opts)
+    keymap("n", "<F7>", "<cmd>CargoTest<cr>", opts)
+    keymap("n", "<F8>", "<cmd>CargoClippy<cr>", opts)
+    -- DAP
     keymap("n", "<F9>", function() require('dap').toggle_breakpoint() end, opts)
-    keymap("n", "<F5>", function() require('dap').continue() end, opts)
     keymap("n", "<F10>", function() require('dap').step_over() end, opts)
     keymap("n", "<F11>", function() require('dap').step_into() end, opts)
     keymap("n", "<F12>", function() require('dap').step_out() end, opts)
   end,
 })
-
 
 -- Quickfix navigation
 keymap("n", "]q", "<cmd>cnext<cr>zz", { desc = "Next quickfix" })

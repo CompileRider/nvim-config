@@ -1,23 +1,18 @@
--------------------------------------------------------------------------------
 -- Indent guides with rainbow colors
--- Visual indentation levels for better code readability
--------------------------------------------------------------------------------
 return {
   "lukas-reineke/indent-blankline.nvim",
   main = "ibl",
   event = { "BufReadPost", "BufNewFile" },
   config = function()
     local hooks = require("ibl.hooks")
-
-    -- Vibrant rainbow colors (Dracula-inspired)
     local rainbow = {
-      { "RainbowRed",    "#ff5555" },
+      { "RainbowRed", "#ff5555" },
       { "RainbowYellow", "#f1fa8c" },
-      { "RainbowBlue",   "#8be9fd" },
+      { "RainbowBlue", "#8be9fd" },
       { "RainbowOrange", "#ffb86c" },
-      { "RainbowGreen",  "#50fa7b" },
+      { "RainbowGreen", "#50fa7b" },
       { "RainbowViolet", "#ff79c6" },
-      { "RainbowCyan",   "#00ffff" },
+      { "RainbowCyan", "#00ffff" },
     }
 
     hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
@@ -38,7 +33,7 @@ return {
         highlight = hl_names,
         include = {
           node_type = {
-            c = { "compound_statement", "if_statement", "for_statement", "while_statement", "switch_statement", "function_definition", "struct_specifier" },
+            rust = { "function_item", "impl_item", "struct_item", "enum_item", "match_expression", "if_expression", "loop_expression", "while_expression", "for_expression", "block", "closure_expression" },
             lua = { "function", "if_statement", "for_statement", "while_statement", "table_constructor" },
           },
         },

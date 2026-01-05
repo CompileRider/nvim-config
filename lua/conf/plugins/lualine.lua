@@ -1,123 +1,50 @@
--- Lualine - Modern statusline
+-- Lualine - Rust statusline
 return {
   "nvim-lualine/lualine.nvim",
-  dependencies = { 
-    "nvim-tree/nvim-web-devicons",
-    "Civitasv/cmake-tools.nvim", -- For CMake integration
-  },
+  dependencies = { "nvim-tree/nvim-web-devicons" },
   event = "VeryLazy",
   config = function()
-    local lualine = require("lualine")
-    
-    -- Custom CMake component
-    local cmake_component = {
-      function()
-        local cmake_tools = package.loaded["cmake-tools"]
-        if cmake_tools and cmake_tools.is_cmake_project() then
-          local target = cmake_tools.get_build_target()
-          local variant = cmake_tools.get_variant()
-          if target and variant then
-            return string.format("󰔷 %s [%s]", target, variant)
-          elseif target then
-            return string.format("󰔷 %s", target)
-          else
-            return "󰔷 CMake"
-          end
-        end
-        return ""
-      end,
-      cond = function()
-        return package.loaded["cmake-tools"] and require("cmake-tools").is_cmake_project()
-      end,
-      color = { fg = "#f7768e" },
-    }
-    
     -- LSP clients component
     local lsp_component = {
       function()
         local clients = vim.lsp.get_clients({ bufnr = 0 })
-        if #clients == 0 then
-          return ""
-        end
-        
-        local client_names = {}
-        for _, client in ipairs(clients) do
-          table.insert(client_names, client.name)
-        end
-        return " " .. table.concat(client_names, ", ")
+        if #clients == 0 then return "" end
+        local names = {}
+        for _, c in ipairs(clients) do table.insert(names, c.name) end
+        return " " .. table.concat(names, ", ")
       end,
       color = { fg = "#7aa2f7" },
     }
-    
-    lualine.setup({
+
+    -- Rust/Cargo component
+    local rust_component = {
+      function()
+        if vim.bo.filetype ~= "rust" then return "" end
+        return "🦀 Rust"
+      end,
+      color = { fg = "#E45A28" },
+    }
+
+    require("lualine").setup({
       options = {
         theme = "tokyonight",
         component_separators = { left = "", right = "" },
         section_separators = { left = "", right = "" },
         globalstatus = true,
-        refresh = {
-          statusline = 1000,
-          tabline = 1000,
-          winbar = 1000,
-        },
       },
       sections = {
         lualine_a = { "mode" },
-        lualine_b = { 
-          "branch", 
-          {
-            "diff",
-            symbols = { added = " ", modified = " ", removed = " " },
-          },
-          {
-            "diagnostics",
-            sources = { "nvim_lsp", "nvim_diagnostic" },
-            symbols = { error = " ", warn = " ", info = " ", hint = " " },
-          },
+        lualine_b = {
+          "branch",
+          { "diff", symbols = { added = " ", modified = " ", removed = " " } },
+          { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
         },
-        lualine_c = {
-          {
-            "filename",
-            file_status = true,
-            newfile_status = false,
-            path = 1, -- Relative path
-            symbols = {
-              modified = "[+]",
-              readonly = "[-]",
-              unnamed = "[No Name]",
-              newfile = "[New]",
-            },
-          },
-        },
-        lualine_x = {
-          cmake_component,
-          lsp_component,
-          "encoding",
-          {
-            "fileformat",
-            symbols = {
-              unix = "LF",
-              dos = "CRLF",
-              mac = "CR",
-            },
-          },
-          "filetype",
-        },
+        lualine_c = { { "filename", path = 1, symbols = { modified = "[+]", readonly = "[-]" } } },
+        lualine_x = { rust_component, lsp_component, "encoding", "filetype" },
         lualine_y = { "progress" },
         lualine_z = { "location" },
       },
-      inactive_sections = {
-        lualine_a = {},
-        lualine_b = {},
-        lualine_c = { "filename" },
-        lualine_x = { "location" },
-        lualine_y = {},
-        lualine_z = {},
-      },
-      tabline = {},
-      winbar = {},
-      inactive_winbar = {},
-      extensions = { "oil", "toggleterm", "aerial" },
+      extensions = { "oil", "toggleterm" },
     })
   end,
 }

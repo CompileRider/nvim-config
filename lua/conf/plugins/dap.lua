@@ -1,54 +1,22 @@
+-- Debug Adapter Protocol (rustaceanvim handles Rust DAP)
 return {
-  'mfussenegger/nvim-dap',
-  dependencies = {
-    'rcarriga/nvim-dap-ui',
-    'theHamsta/nvim-dap-virtual-text',
-    'nvim-neotest/nvim-nio',
+  "mfussenegger/nvim-dap",
+  dependencies = { "rcarriga/nvim-dap-ui", "theHamsta/nvim-dap-virtual-text", "nvim-neotest/nvim-nio" },
+  keys = {
+    { "<F5>", function() require("dap").continue() end, desc = "Debug continue" },
+    { "<F10>", function() require("dap").step_over() end, desc = "Step over" },
+    { "<F11>", function() require("dap").step_into() end, desc = "Step into" },
+    { "<F12>", function() require("dap").step_out() end, desc = "Step out" },
+    { "<leader>b", function() require("dap").toggle_breakpoint() end, desc = "Toggle breakpoint" },
   },
   config = function()
-    local dap = require('dap')
-    local dapui = require('dapui')
-
+    local dapui = require("dapui")
     dapui.setup()
-    require('nvim-dap-virtual-text').setup()
+    require("nvim-dap-virtual-text").setup()
 
-    dap.listeners.after.event_initialized['dapui_config'] = function()
-      dapui.open()
-    end
-    dap.listeners.before.event_terminated['dapui_config'] = function()
-      dapui.close()
-    end
-    dap.listeners.before.event_exited['dapui_config'] = function()
-      dapui.close()
-    end
-
-    -- C/C++ configuration
-    dap.adapters.cppdbg = {
-      id = 'cppdbg',
-      type = 'executable',
-      command = '/home/esmil/.local/share/nvim/mason/bin/OpenDebugAD7',
-    }
-
-    dap.configurations.cpp = {
-      {
-        name = 'Launch file',
-        type = 'cppdbg',
-        request = 'launch',
-        program = function()
-          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
-        end,
-        cwd = '${workspaceFolder}',
-        stopOnEntry = true,
-      },
-    }
-
-    dap.configurations.c = dap.configurations.cpp
-
-    -- Key mappings
-    vim.keymap.set('n', '<F5>', dap.continue)
-    vim.keymap.set('n', '<F10>', dap.step_over)
-    vim.keymap.set('n', '<F11>', dap.step_into)
-    vim.keymap.set('n', '<F12>', dap.step_out)
-    vim.keymap.set('n', '<leader>b', dap.toggle_breakpoint)
+    local dap = require("dap")
+    dap.listeners.after.event_initialized["dapui"] = dapui.open
+    dap.listeners.before.event_terminated["dapui"] = dapui.close
+    dap.listeners.before.event_exited["dapui"] = dapui.close
   end,
 }
