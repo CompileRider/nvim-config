@@ -51,29 +51,57 @@ local function setup_sccache()
   if cargo_home == "" or cargo_home == "$CARGO_HOME" then
     cargo_home = vim.fn.expand("~/.cargo")
   end
-  local config_path = cargo_home .. "/config.toml"
   
-  -- Check if sccache is already configured
-  local f = io.open(config_path, "r")
+  -- Configure cargo to use sccache
+  local cargo_config = cargo_home .. "/config.toml"
+  local f = io.open(cargo_config, "r")
+  local has_sccache = false
   if f then
-    local content = f:read("*a")
+    has_sccache = f:read("*a"):find("sccache")
     f:close()
-    if content:find("sccache") then return end
   end
   
-  -- Append sccache config
-  local sccache_path = cargo_home .. "/bin/sccache"
-  if vim.fn.has("win32") == 1 then
-    sccache_path = sccache_path .. ".exe"
+  if not has_sccache then
+    local sccache_path = cargo_home .. "/bin/sccache"
+    if vim.fn.has("win32") == 1 then sccache_path = sccache_path .. ".exe" end
+    
+    f = io.open(cargo_config, "a")
+    if f then
+      f:write("\n# Auto-configured by nvim\n[build]\nrustc-wrapper = \"" .. sccache_path .. "\"\n")
+      f:close()
+    end
   end
   
-  f = io.open(config_path, "a")
+  -- Configure sccache itself
+  local sccache_dir = vim.fn.has("win32") == 1 
+    and vim.fn.expand("$APPDATA/sccache")
+    or vim.fn.expand("~/.config/sccache")
+  local cache_dir = vim.fn.has("win32") == 1
+    and vim.fn.expand("$LOCALAPPDATA/sccache")
+    or vim.fn.expand("~/.cache/sccache")
+  
+  vim.fn.mkdir(sccache_dir, "p")
+  vim.fn.mkdir(cache_dir, "p")
+  
+  local sccache_config = sccache_dir .. "/config"
+  f = io.open(sccache_config, "r")
+  if f then f:close() return end -- Already configured
+  
+  f = io.open(sccache_config, "w")
   if f then
-    f:write("\n# Auto-configured by nvim\n")
-    f:write("[build]\n")
-    f:write('rustc-wrapper = "' .. sccache_path .. '"\n')
+    f:write('[cache.disk]\n')
+    f:write('dir = "' .. cache_dir .. '"\n')
+    f:write('size = 10737418240\n') -- 10 GiB
+    f:write('rw_mode = "READ_WRITE"\n\n')
+    f:write('[cache.disk.preprocessor_cache_mode]\n')
+    f:write('use_preprocessor_cache_mode = true\n')
+    f:write('file_stat_matches = true\n')
+    f:write('use_ctime_for_stat = true\n')
+    f:write('ignore_time_macros = false\n')
+    f:write('skip_system_headers = false\n')
+    f:write('hash_working_directory = true\n')
     f:close()
-    vim.notify("sccache configured in " .. config_path, vim.log.levels.INFO)
+    vim.notify("sccache configured", vim.log.levels.INFO)
   end
 end
 
