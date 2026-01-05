@@ -15,8 +15,8 @@ Professional Neovim configuration optimized for **Rust development** with beauti
 ### Cargo.toml with crates.nvim
 ![Cargo](images/3.png)
 
-### Discord Presence
-![Discord](images/4.png)
+### Discord Rich Presence
+![Discord](images/discord_large.png)
 
 ## ✨ Features
 
