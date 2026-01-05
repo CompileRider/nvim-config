@@ -109,7 +109,7 @@ local themes = {
   eldritch = { "eldritch-theme/eldritch.nvim", cmd = "eldritch" },
   flow = { "0xstepit/flow.nvim", cmd = "flow" },
   bluloco = { "uloco/bluloco.nvim", cmd = "bluloco" },
-  sweetie = { "NTBBlooworx/sweetie.nvim", cmd = "sweetie" },
+  sweetie = { "NTBBloodbath/sweetie.nvim", cmd = "sweetie" },
   miasma = { "xero/miasma.nvim", cmd = "miasma" },
   iceberg = { "cocopon/iceberg.vim", cmd = "iceberg" },
   palenight = { "drewtempelmeyer/palenight.vim", cmd = "palenight" },
