@@ -12,11 +12,11 @@ Professional Neovim configuration optimized for **Rust development** with beauti
 ### Inline Diagnostics
 ![Diagnostics](images/2.png)
 
-### Cargo.toml with crates.nvim
+### Cargo.toml Dependency Management
 ![Cargo](images/3.png)
 
 ### Discord Rich Presence
-![Discord](images/discord_large.png)
+![Discord](discord_large.png)
 
 ## ✨ Features
 
