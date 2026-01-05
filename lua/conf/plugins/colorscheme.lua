@@ -204,9 +204,16 @@ vim.api.nvim_create_user_command("Colorscheme", function()
         local entry = state.get_selected_entry()
         actions.close(buf)
         if entry then
-          save(entry[1])
-          apply_theme(entry[1])
-          vim.notify("Colorscheme saved: " .. entry[1])
+          local name = entry[1]
+          local repo = get_repo(name)
+          save(name)
+          
+          if installed_repos[repo] then
+            apply_theme(name)
+            vim.notify("Colorscheme: " .. name)
+          else
+            vim.notify("Colorscheme saved: " .. name .. ". Restart Neovim to apply.", vim.log.levels.INFO)
+          end
         end
       end)
 
