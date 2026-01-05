@@ -1,6 +1,6 @@
 # 🔥 Bare Metal C - Neovim Configuration
 
-Professional Neovim configuration optimized for **C development** with beautiful UI and smooth animations.
+Professional Neovim configuration optimized for **C/C++ development** with beautiful UI and smooth animations.
 
 > Forked from [Magicalbat/Configs](https://github.com/Magicalbat/Configs) and enhanced with 40+ plugins.
 
