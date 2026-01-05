@@ -112,20 +112,46 @@ return {
       }
       vim.lsp.enable("bacon_ls")
 
-      -- taplo for TOML (Cargo.toml completion)
+      -- taplo for TOML (Cargo.toml completion, validation, formatting)
       vim.lsp.config["taplo"] = {
         cmd = { vim.fn.expand("~/.cargo/bin/taplo"), "lsp", "stdio" },
         filetypes = { "toml" },
-        root_markers = { ".git", "Cargo.toml" },
+        root_markers = { ".git", "Cargo.toml", ".taplo.toml", "taplo.toml" },
         settings = {
-          taplo = {
-            configFile = { enabled = true },
+          evenBetterToml = {
             schema = {
               enabled = true,
               catalogs = { "https://www.schemastore.org/api/json/catalog.json" },
               associations = {
                 ["Cargo\\.toml$"] = "https://json.schemastore.org/cargo.json",
+                ["pyproject\\.toml$"] = "https://json.schemastore.org/pyproject.json",
+                ["rustfmt\\.toml$"] = "https://json.schemastore.org/rustfmt.json",
+                ["clippy\\.toml$"] = "https://json.schemastore.org/clippy.json",
+                ["\\.?taplo\\.toml$"] = "https://taplo.tamasfe.dev/schemas/taplo.json",
               },
+            },
+            formatter = {
+              alignEntries = false,
+              alignComments = true,
+              arrayTrailingComma = true,
+              arrayAutoExpand = true,
+              arrayAutoCollapse = true,
+              compactArrays = true,
+              compactInlineTables = false,
+              compactEntries = false,
+              columnWidth = 100,
+              indentTables = false,
+              indentEntries = false,
+              indentString = "  ",
+              trailingNewline = true,
+              reorderKeys = false,
+              reorderArrays = false,
+              allowedBlankLines = 1,
+              crlf = false,
+            },
+            semanticTokens = true,
+            completion = {
+              maxKeys = 100,
             },
           },
         },
