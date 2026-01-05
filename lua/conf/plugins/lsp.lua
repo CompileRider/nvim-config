@@ -113,22 +113,33 @@ return {
       vim.lsp.enable("bacon_ls")
 
       -- taplo for TOML (Cargo.toml completion, validation, formatting)
+      local capabilities = vim.lsp.protocol.make_client_capabilities()
+      local cmp_ok, cmp_lsp = pcall(require, "cmp_nvim_lsp")
+      if cmp_ok then
+        capabilities = vim.tbl_deep_extend("force", capabilities, cmp_lsp.default_capabilities())
+      end
+
       vim.lsp.config["taplo"] = {
         cmd = { vim.fn.expand("~/.cargo/bin/taplo"), "lsp", "stdio" },
         filetypes = { "toml" },
         root_markers = { ".git", "Cargo.toml", ".taplo.toml", "taplo.toml" },
+        capabilities = capabilities,
+        on_attach = function(client, bufnr)
+          local opts = { buffer = bufnr, silent = true }
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+          vim.keymap.set("n", "<leader>f", function() vim.lsp.buf.format({ async = true }) end, opts)
+        end,
+        init_options = {
+          configurationSection = "evenBetterToml",
+          cachePath = vim.fn.stdpath("cache") .. "/taplo",
+        },
         settings = {
           evenBetterToml = {
             schema = {
               enabled = true,
               catalogs = { "https://www.schemastore.org/api/json/catalog.json" },
-              associations = {
-                ["Cargo\\.toml$"] = "https://json.schemastore.org/cargo.json",
-                ["pyproject\\.toml$"] = "https://json.schemastore.org/pyproject.json",
-                ["rustfmt\\.toml$"] = "https://json.schemastore.org/rustfmt.json",
-                ["clippy\\.toml$"] = "https://json.schemastore.org/clippy.json",
-                ["\\.?taplo\\.toml$"] = "https://taplo.tamasfe.dev/schemas/taplo.json",
-              },
             },
             formatter = {
               alignEntries = false,
@@ -138,20 +149,11 @@ return {
               arrayAutoCollapse = true,
               compactArrays = true,
               compactInlineTables = false,
-              compactEntries = false,
               columnWidth = 100,
-              indentTables = false,
-              indentEntries = false,
               indentString = "  ",
               trailingNewline = true,
               reorderKeys = false,
-              reorderArrays = false,
               allowedBlankLines = 1,
-              crlf = false,
-            },
-            semanticTokens = true,
-            completion = {
-              maxKeys = 100,
             },
           },
         },
