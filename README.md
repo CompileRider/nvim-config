@@ -9,8 +9,8 @@ Professional Neovim configuration optimized for **Rust development** with beauti
 ### Code Editing with Semantic Highlighting
 ![Code](images/1.png)
 
-### Inline Diagnostics
-![Diagnostics](images/2.png)
+### Dashboard
+![Dashboard](images/2.png)
 
 ### Expanded Inline Diagnostics
 ![Diagnostics Expanded](images/3.png)
