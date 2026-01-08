@@ -21,6 +21,6 @@ return {
         },
       },
     })
-    vim.diagnostic.config({ virtual_text = false })
+    vim.diagnostic.config({ virtual_text = false, signs = false })
   end,
 }
