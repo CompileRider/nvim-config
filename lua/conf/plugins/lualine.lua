@@ -37,7 +37,7 @@ return {
         lualine_b = {
           "branch",
           { "diff", symbols = { added = " ", modified = " ", removed = " " } },
-          { "diagnostics", symbols = { error = " ", warn = " ", info = " ", hint = " " } },
+          { "diagnostics", symbols = { error = "E ", warn = "W ", info = "I ", hint = "H " } },
         },
         lualine_c = { { "filename", path = 1, symbols = { modified = "[+]", readonly = "[-]" } } },
         lualine_x = { rust_component, lsp_component, "encoding", "filetype" },
