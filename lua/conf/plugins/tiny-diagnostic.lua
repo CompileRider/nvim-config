@@ -7,6 +7,15 @@ return {
     require("tiny-inline-diagnostic").setup({
       preset = "modern",
       transparent_bg = true,
+      signs = {
+        left = "",
+        right = "",
+        diag = "",  -- Sin icono
+        arrow = " ",
+        up_arrow = " ",
+        vertical = " │",
+        vertical_end = " └",
+      },
       options = {
         show_source = { enabled = true },
         multilines = { enabled = true, always_show = false },
@@ -15,9 +24,9 @@ return {
         throttle = 20,
         softwrap = 50,
         add_messages = {
-          messages = false,           -- Hide messages by default
-          display_count = false,      -- Just show icon
-          show_multiple_glyphs = true,
+          messages = false,
+          display_count = false,
+          show_multiple_glyphs = false,
         },
       },
     })
